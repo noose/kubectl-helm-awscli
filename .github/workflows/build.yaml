@@ -36,7 +36,7 @@ jobs:
       id: meta-ghcr
       uses: docker/metadata-action@v5
       with:
-        images: noose/kubectl-helm-aws
+        images: ghcr.io/noose/kubectl-helm-aws
         tags: ${{ matrix.kubectl_version }}-${{ matrix.helm_version }}-${{ matrix.aws_cli_version }}
 
     - name: Log in to GitHub Container Registry
