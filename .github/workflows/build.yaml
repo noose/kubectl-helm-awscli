@@ -104,6 +104,11 @@ jobs:
         draft: false
         prerelease: false
 
+    - name: Install the gh cli
+      uses: ksivamuthu/actions-setup-gh-cli@v3
+      with:
+        version: 2.62.0
+
     - name: Publish Action to Marketplace
       run: |
         gh api -X POST /repos/:owner/:repo/actions/runs/:run_id/approve -f state=approved
