@@ -2,16 +2,28 @@ name: 'Kubectl Helm AWS CLI Action'
 description: 'A custom GitHub Action to use kubectl, helm, and AWS CLI in one package'
 author: 'noose'
 inputs:
+  kubectl_version:
+    description: 'The version of kubectl to use'
+    required: true
+    default: '1.31.0'
+  helm_version:
+    description: 'The version of helm to use'
+    required: true
+    default: '3.14.0'
+  aws_cli_version:
+    description: 'The version of AWS CLI to use'
+    required: true
+    default: '2.17.31'
   args:
     description: 'The command to run with kubectl, helm, and AWS CLI'
     required: true
     default: ''
 runs:
   using: 'docker'
-  image: 'Dockerfile'
+  image: 'docker://noose/kubectl-helm-aws:${{ inputs.kubectl_version }}-${{ inputs.helm_version }}-${{ inputs.aws_cli_version }}'
   env:
     KUBE_CONFIG_DATA: 'Cg==' # base64 encoded kubeconfig, or Cg== for empty
     AWS_ACCESS_KEY_ID: '' # can be populated from aws-actions/configure-aws-credentials
     AWS_SECRET_ACCESS_KEY: '' # can be populated from aws-actions/configure-aws-credentials
   args: |
-    Your script
+    ${{ inputs.args }}

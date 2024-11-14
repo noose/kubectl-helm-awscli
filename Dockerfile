@@ -1,4 +1,5 @@
-FROM amazon/aws-cli:2.17.31
+ARG AWS_CLI_VERSION=2.17.31
+FROM amazon/aws-cli:${AWS_CLI_VERSION}
 
 ARG KUBE_VERSION="1.23.0"
 ARG HELM_VERSION="3.7.2"
@@ -24,4 +25,3 @@ COPY run.sh .
 RUN chmod a+x /app/run.sh
 
 ENTRYPOINT [ "/app/run.sh" ]
-
