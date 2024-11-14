@@ -103,4 +103,9 @@ jobs:
           Release for kubectl v${{ matrix.kubectl_version }}, helm v${{ matrix.helm_version }}, and AWS CLI v${{ matrix.aws_cli_version }}.
         draft: false
         prerelease: false
-#        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Publish Action to Marketplace
+      run: |
+        gh api -X POST /repos/:owner/:repo/actions/runs/:run_id/approve -f state=approved
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
