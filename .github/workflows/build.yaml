@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       packages: write
-      contents: read
+      contents: write
       attestations: write
       id-token: write
     steps:
@@ -32,7 +32,27 @@ jobs:
         images: noose/kubectl-helm-aws
         tags: ${{ matrix.kubectl_version }}-${{ matrix.helm_version }}-${{ matrix.aws_cli_version }}
 
-    - name: Build and push Docker image
+    - name: Extract metadata (tags, labels) for ghcr.io
+      id: meta-ghcr
+      uses: docker/metadata-action@v5
+      with:
+        images: noose/kubectl-helm-aws
+        tags: ${{ matrix.kubectl_version }}-${{ matrix.helm_version }}-${{ matrix.aws_cli_version }}
+
+    - name: Log in to GitHub Container Registry
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+    - name: Update action.yaml with version information
+      run: |
+        VERSION_TAG="v${{ matrix.kubectl_version }}-${{ matrix.helm_version }}-${{ matrix.aws_cli_version }}"
+        sed -i "s|image:.*|image: 'docker://ghcr.io/noose/kubectl-helm-awscli:${VERSION_TAG}'|" action.yaml
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git commit -am "Update action.yaml with image version $VERSION_TAG"
+        git tag -a "$VERSION_TAG" -m "Release $VERSION_TAG"
+        git push origin "$VERSION_TAG"
+
+    - name: Build and push Docker image - docker.io
       id: push
       uses: docker/build-push-action@v6
       with:
@@ -46,9 +66,41 @@ jobs:
           KUBECTL_VERSION=${{ matrix.kubectl_version }}
           HELM_VERSION=${{ matrix.helm_version }}
 
+    - name: Build and push Docker image - ghcr.io
+      id: push-ghcr
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: ${{ steps.meta-ghcr.outputs.tags }}
+        labels: ${{ steps.meta-ghcr.outputs.labels }}
+        build-args: |
+          AWS_CLI_VERSION=${{ matrix.aws_cli_version }}
+          KUBECTL_VERSION=${{ matrix.kubectl_version }}
+          HELM_VERSION=${{ matrix.helm_version }}
+
     - name: Generate artifact attestation
       uses: actions/attest-build-provenance@v1
       with:
         subject-name: docker.io/noose/kubectl-helm-aws
         subject-digest: ${{ steps.push.outputs.digest }}
         push-to-registry: true
+
+    - name: Generate artifact attestation - ghcr.io
+      uses: actions/attest-build-provenance@v1
+      with:
+        subject-name: ghcr.io/noose/kubectl-helm-aws
+        subject-digest: ${{ steps.push-ghcr.outputs.digest }}
+        push-to-registry: true
+
+    - name: Create GitHub Release
+      uses: ncipollo/release-action@v1.14.0
+      with:
+        tag: v${{ matrix.kubectl_version }}-${{ matrix.helm_version }}-${{ matrix.aws_cli_version }}
+        name: v${{ matrix.kubectl_version }}-${{ matrix.helm_version }}-${{ matrix.aws_cli_version }}
+        body: |
+          Release for kubectl v${{ matrix.kubectl_version }}, helm v${{ matrix.helm_version }}, and AWS CLI v${{ matrix.aws_cli_version }}.
+        draft: false
+        prerelease: false
+#        token: ${{ secrets.GITHUB_TOKEN }}
