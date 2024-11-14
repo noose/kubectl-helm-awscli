@@ -44,7 +44,7 @@ jobs:
 
     - name: Update action.yaml with version information
       run: |
-        VERSION_TAG="v${{ matrix.kubectl_version }}-${{ matrix.helm_version }}-${{ matrix.aws_cli_version }}"
+        VERSION_TAG="${{ matrix.kubectl_version }}-${{ matrix.helm_version }}-${{ matrix.aws_cli_version }}"
         sed -i "s|image:.*|image: 'docker://ghcr.io/noose/kubectl-helm-awscli:${VERSION_TAG}'|" action.yaml
         git checkout -b "$VERSION_TAG"
         git config user.name "GitHub Actions"
@@ -102,6 +102,10 @@ jobs:
         tag: v${{ matrix.kubectl_version }}-${{ matrix.helm_version }}-${{ matrix.aws_cli_version }}
         name: v${{ matrix.kubectl_version }}-${{ matrix.helm_version }}-${{ matrix.aws_cli_version }}
         body: |
-          Release for kubectl v${{ matrix.kubectl_version }}, helm v${{ matrix.helm_version }}, and AWS CLI v${{ matrix.aws_cli_version }}.
+          Release for:
+           * kubectl v${{ matrix.kubectl_version }}
+           * helm v${{ matrix.helm_version }}
+           * AWS CLI v${{ matrix.aws_cli_version }}
+
         draft: false
         prerelease: false

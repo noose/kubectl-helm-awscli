@@ -6,6 +6,9 @@ A custom GitHub Action to use `kubectl`, `helm`, and `AWS CLI` in one package. T
 
 To use this action in your workflow, add the following step to your `.github/workflows/<workflow>.yaml` file:
 
+Remember that tag is combination of kubectl, helm, and aws-cli versions. For example, `1.31.0-3.14.0-2.17.31` means kubectl version `1.31.0`, helm version `3.14.0`, and aws-cli version `2.17.31`.
+All available releases can be found [here](https://github.com/noose/kubectl-helm-awscli/releases)
+
 ```yaml
 jobs:
   build:
@@ -22,11 +25,8 @@ jobs:
         aws-region: us-west-2
 
     - name: Run Kubectl Helm AWS CLI Action
-      uses: noose/kubectl-helm-awscli@v1
+      uses: noose/kubectl-helm-awscli@1.31.0-3.14.0-2.17.31
       with:
-        kubectl_version: '1.31.0'
-        helm_version: '3.14.0'
-        aws_cli_version: '2.17.31'
         args: |
           aws eks update-kubeconfig --name <cluster>
           kubectl get pods
@@ -34,9 +34,6 @@ jobs:
 
 ## Inputs
 
-- `kubectl_version`: The version of `kubectl` to use (default: `1.31.0`).
-- `helm_version`: The version of `helm` to use (default: `3.14.0`).
-- `aws_cli_version`: The version of `AWS CLI` to use (default: `2.17.31`).
 - `args`: The command to run with `kubectl`, `helm`, and `AWS CLI`.
 
 ## Examples
@@ -59,11 +56,8 @@ jobs:
         aws-region: us-west-2
 
     - name: List Kubernetes Pods
-      uses: noose/kubectl-helm-awscli@v1
+      uses: noose/kubectl-helm-awscli@1.31.0-3.14.0-2.17.31
       with:
-        kubectl_version: '1.31.0'
-        helm_version: '3.14.0'
-        aws_cli_version: '2.17.31'
         args: |
           aws eks update-kubeconfig --name <cluster>
           kubectl get pods
@@ -87,11 +81,8 @@ jobs:
         aws-region: us-west-2
 
     - name: Deploy Helm Chart
-      uses: noose/kubectl-helm-awscli@v1
+      uses: noose/kubectl-helm-awscli@1.31.0-3.14.0-2.17.31
       with:
-        kubectl_version: '1.31.0'
-        helm_version: '3.14.0'
-        aws_cli_version: '2.17.31'
         args: |
           aws eks update-kubeconfig --name <cluster>
           helm install my-chart stable/my-chart
@@ -115,11 +106,8 @@ jobs:
         aws-region: us-west-2
 
     - name: AWS CLI Command
-      uses: noose/kubectl-helm-awscli@v1
+      uses: noose/kubectl-helm-awscli@1.31.0-3.14.0-2.17.31
       with:
-        kubectl_version: '1.31.0'
-        helm_version: '3.14.0'
-        aws_cli_version: '2.17.31'
         args: |
           aws s3 ls
 ```
