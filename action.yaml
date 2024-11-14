@@ -30,5 +30,5 @@ runs:
     KUBE_CONFIG_DATA: 'Cg==' # base64 encoded kubeconfig, or Cg== for empty
     AWS_ACCESS_KEY_ID: '' # can be populated from aws-actions/configure-aws-credentials
     AWS_SECRET_ACCESS_KEY: '' # can be populated from aws-actions/configure-aws-credentials
-  args: |
-    ${{ inputs.args }}
+  args:
+    - ${{ inputs.args }}

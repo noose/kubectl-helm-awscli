@@ -101,6 +101,7 @@ jobs:
       with:
         tag: v${{ matrix.kubectl_version }}-${{ matrix.helm_version }}-${{ matrix.aws_cli_version }}
         name: v${{ matrix.kubectl_version }}-${{ matrix.helm_version }}-${{ matrix.aws_cli_version }}
+        makeLatest: 'legacy'
         body: |
           Release for:
            * kubectl v${{ matrix.kubectl_version }}
