@@ -1,6 +1,11 @@
 name: 'Kubectl Helm AWS CLI Action'
 description: 'A custom GitHub Action to use kubectl, helm, and AWS CLI in one package'
 author: 'noose'
+
+branding:
+  icon: 'terminal'
+  color: 'black'
+
 inputs:
   kubectl_version:
     description: 'The version of kubectl to use'
