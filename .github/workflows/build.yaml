@@ -46,11 +46,13 @@ jobs:
       run: |
         VERSION_TAG="v${{ matrix.kubectl_version }}-${{ matrix.helm_version }}-${{ matrix.aws_cli_version }}"
         sed -i "s|image:.*|image: 'docker://ghcr.io/noose/kubectl-helm-awscli:${VERSION_TAG}'|" action.yaml
+        git checkout -b "$VERSION_TAG"
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
         git commit -am "Update action.yaml with image version $VERSION_TAG"
-        git tag -a "$VERSION_TAG" -m "Release $VERSION_TAG"
-        git push origin "$VERSION_TAG"
+        git tag -a "v$VERSION_TAG" -m "Release $VERSION_TAG"
+        git push origin "v$VERSION_TAG" # tag
+        git push origin "$VERSION_TAG" # branch
 
     - name: Build and push Docker image - docker.io
       id: push
@@ -103,14 +105,3 @@ jobs:
           Release for kubectl v${{ matrix.kubectl_version }}, helm v${{ matrix.helm_version }}, and AWS CLI v${{ matrix.aws_cli_version }}.
         draft: false
         prerelease: false
-
-    - name: Install the gh cli
-      uses: ksivamuthu/actions-setup-gh-cli@v3
-      with:
-        version: 2.62.0
-
-    - name: Publish Action to Marketplace
-      run: |
-        gh api -X POST /repos/:owner/:repo/actions/runs/:run_id/approve -f state=approved
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
