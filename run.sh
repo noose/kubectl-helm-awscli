@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -xe
 
-: "${KUBE_CONFIG_DATA:="change me"}"
+: "${KUBE_CONFIG_DATA:="Cg=="}"
 : "${AWS_ACCESS_KEY_ID:="change me"}"
 : "${AWS_SECRET_ACCESS_KEY:="change me"}"
 
