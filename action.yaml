@@ -25,7 +25,7 @@ inputs:
     default: ''
 runs:
   using: 'docker'
-  image: 'docker://noose/kubectl-helm-aws:${{ inputs.kubectl_version }}-${{ inputs.helm_version }}-${{ inputs.aws_cli_version }}'
+  image: 'docker://ghcr.io/noose/kubectl-helm-awscli:1.31.0-3.14.0-2.17.31'
   env:
     KUBE_CONFIG_DATA: 'Cg==' # base64 encoded kubeconfig, or Cg== for empty
     AWS_ACCESS_KEY_ID: '' # can be populated from aws-actions/configure-aws-credentials
