@@ -45,7 +45,7 @@ jobs:
     - name: Update action.yaml with version information
       run: |
         VERSION_TAG="${{ matrix.kubectl_version }}-${{ matrix.helm_version }}-${{ matrix.aws_cli_version }}"
-        sed -i "s|image:.*|image: 'docker://ghcr.io/noose/kubectl-helm-awscli:${VERSION_TAG}'|" action.yaml
+        sed -i "s|image:.*|image: 'docker://ghcr.io/noose/kubectl-helm-aws:${VERSION_TAG}'|" action.yaml
         git checkout -b "$VERSION_TAG"
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
